@@ -2,6 +2,7 @@ package org.fasttrackit.web;
 
 import org.fasttrackit.config.ObjectMapperConfiguration;
 import org.fasttrackit.domain.Agenda;
+import org.fasttrackit.persistance.AgendaRepository;
 import org.fasttrackit.service.AgendaService;
 import org.fasttrackit.transfer.CreateAgendaEntryRequest;
 import org.fasttrackit.transfer.UpdateAgendaEntryRequest;
@@ -66,6 +67,17 @@ public class AgendaServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         setAccessControlHeaders(resp);
+
+        String first_name = req.getParameter("first_name");
+
+        if (first_name != null){
+            try {
+                AgendaRepository agendaRepository = new AgendaRepository();
+                agendaRepository.getContactByName(req.getParameter("first_name"));
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
 
         try {
             List<Agenda> list = agendaService.getEntries();

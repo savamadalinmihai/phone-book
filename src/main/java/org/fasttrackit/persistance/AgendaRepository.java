@@ -64,13 +64,24 @@ public class AgendaRepository {
         }
     }
 
-    public void getContact() throws IOException, SQLException, ClassNotFoundException {
-        String sql = "SELECT first_name, last_name, phone_number FROM contact WHERE first_name LIKE ?";
+    public List<Agenda> getContactByName(CreateAgendaEntryRequest request) throws IOException, SQLException, ClassNotFoundException {
+        String sql = "SELECT first_name, last_name, phone_number FROM contact WHERE first_name LIKE '?%'";
         try (Connection connection = DatabaseConfiguration.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-        } catch (IOException e) {
-            e.printStackTrace();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, request.getFirst_name());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Agenda> singleContact = new ArrayList<>();
+
+            while (resultSet.next()) {
+                Agenda agenda = new Agenda();
+                agenda.setFirst_name(resultSet.getString("first_name"));
+                agenda.setLast_name(resultSet.getString("last_name"));
+                agenda.setPhone_number(resultSet.getString("phone_number"));
+
+                singleContact.add(agenda);
+            }
+            return singleContact;
         }
     }
 
