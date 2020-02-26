@@ -32,4 +32,9 @@ public class AgendaService {
         System.out.println("Searching for all agenda entries.");
         return agendaRepository.getContacts();
     }
+
+    public List<Agenda> getContactByName() throws IOException, SQLException, ClassNotFoundException {
+        System.out.println("Searching for the requested entry.");
+        return agendaRepository.getContactByName();
+    }
 }

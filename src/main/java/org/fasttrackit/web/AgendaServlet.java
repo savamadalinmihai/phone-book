@@ -31,7 +31,7 @@ public class AgendaServlet extends HttpServlet {
         try {
             agendaService.createEntry(request);
         } catch (SQLException | ClassNotFoundException e) {
-            resp.sendError( 500, "Internal server error: " + e.getMessage());
+            resp.sendError(500, "Internal server error: " + e.getMessage());
         }
     }
 
@@ -44,7 +44,7 @@ public class AgendaServlet extends HttpServlet {
         try {
             agendaService.deleteEntry(Integer.parseInt(id));
         } catch (SQLException | ClassNotFoundException e) {
-            resp.sendError( 500, "Internal server error: " + e.getMessage());
+            resp.sendError(500, "Internal server error: " + e.getMessage());
         }
     }
 
@@ -60,7 +60,7 @@ public class AgendaServlet extends HttpServlet {
         try {
             agendaService.updateEntry(Integer.parseInt(id), request);
         } catch (SQLException | ClassNotFoundException e) {
-            resp.sendError( 500, "Internal server error: " + e.getMessage());
+            resp.sendError(500, "Internal server error: " + e.getMessage());
         }
     }
 
@@ -70,24 +70,28 @@ public class AgendaServlet extends HttpServlet {
 
         String first_name = req.getParameter("first_name");
 
-        if (first_name != null){
+        if (first_name != null) {
             try {
-                AgendaRepository agendaRepository = new AgendaRepository();
-                agendaRepository.getContactByName(req.getParameter("first_name"));
+                CreateAgendaEntryRequest request = new CreateAgendaEntryRequest();
+                request.setFirst_name(first_name);
+                ObjectMapperConfiguration.objectMapper.writeValue(resp.getWriter(),
+                        agendaService.getContactByName());
             } catch (SQLException | ClassNotFoundException e) {
-                e.printStackTrace();
+                resp.sendError(500, "Internal server error: " + e.getMessage());
             }
-        }
 
-        try {
-            List<Agenda> list = agendaService.getEntries();
+        } else {
 
-            String response = ObjectMapperConfiguration.objectMapper.writeValueAsString(list);
+            try {
+                List<Agenda> list = agendaService.getEntries();
 
-            resp.getWriter().print(response);
+                String response = ObjectMapperConfiguration.objectMapper.writeValueAsString(list);
 
-        } catch (SQLException | ClassNotFoundException e) {
-            resp.sendError( 500, "Internal server error: " + e.getMessage());
+                resp.getWriter().print(response);
+
+            } catch (SQLException | ClassNotFoundException e) {
+                resp.sendError(500, "Internal server error: " + e.getMessage());
+            }
         }
     }
 
@@ -98,7 +102,7 @@ public class AgendaServlet extends HttpServlet {
     }
 
     // CORS configuration (CROSS-ORIGIN-RESOURCE-SHARING)
-    private void setAccessControlHeaders(HttpServletResponse resp){
+    private void setAccessControlHeaders(HttpServletResponse resp) {
         resp.setHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
         resp.setHeader("Access-Control-Allow-Headers", "content-type");
