@@ -75,7 +75,7 @@ public class AgendaServlet extends HttpServlet {
                 CreateAgendaEntryRequest request = new CreateAgendaEntryRequest();
                 request.setFirst_name(first_name);
                 ObjectMapperConfiguration.objectMapper.writeValue(resp.getWriter(),
-                        agendaService.getContactByName());
+                        agendaService.getContactByName(request));
             } catch (SQLException | ClassNotFoundException e) {
                 resp.sendError(500, "Internal server error: " + e.getMessage());
             }

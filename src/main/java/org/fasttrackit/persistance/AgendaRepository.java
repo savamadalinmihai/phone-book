@@ -65,7 +65,7 @@ public class AgendaRepository {
     }
 
     public List<Agenda> getContactByName(CreateAgendaEntryRequest request) throws IOException, SQLException, ClassNotFoundException {
-        String sql = "SELECT first_name, last_name, phone_number FROM contact WHERE first_name LIKE '?%'";
+        String sql = "SELECT first_name, last_name, phone_number FROM contact WHERE first_name LIKE ?";
         try (Connection connection = DatabaseConfiguration.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, request.getFirst_name());
