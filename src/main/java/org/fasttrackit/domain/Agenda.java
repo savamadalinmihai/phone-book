@@ -6,7 +6,7 @@ public class Agenda {
     private String first_name;
     private String last_name;
     private String phone_number;
-
+    private String email;
     @Override
     public String toString() {
         return "AgendaServlet{" +
@@ -14,7 +14,16 @@ public class Agenda {
                 ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +
                 ", phone_number='" + phone_number + '\'' +
+                ", email='" + email + '\'' +
                 '}';
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getId() {

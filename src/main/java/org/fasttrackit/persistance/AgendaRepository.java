@@ -13,7 +13,7 @@ public class AgendaRepository {
 
     public void createEntry(CreateAgendaEntryRequest request) throws SQLException, ClassNotFoundException {
         // preventing sql injection by avoiding concatenation and using prepared statement
-        String sql = "INSERT INTO contact (first_name, last_name, phone_number) VALUES (?,?,?)";
+        String sql = "INSERT INTO contact (first_name, last_name, phone_number, email) VALUES (?,?,?,?)";
 
         try (Connection connection = DatabaseConfiguration.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -22,6 +22,7 @@ public class AgendaRepository {
             preparedStatement.setString(1, request.getFirst_name());
             preparedStatement.setString(2, request.getLast_name());
             preparedStatement.setString(3, request.getPhone_number());
+            preparedStatement.setString(4, request.getEmail());
 
             preparedStatement.executeUpdate();
         } catch (IOException e) {
@@ -31,7 +32,7 @@ public class AgendaRepository {
 
     public void updateEntry(int id, UpdateAgendaEntryRequest request) throws SQLException, ClassNotFoundException {
         // preventing sql injection by avoiding concatenation and using prepared statement
-        String sql = "UPDATE contact SET first_name = ?, last_name = ?, phone_number = ? WHERE id = ?";
+        String sql = "UPDATE contact SET first_name = ?, last_name = ?, phone_number = ?, email = ? WHERE id = ?";
 
         try (Connection connection = DatabaseConfiguration.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -40,7 +41,8 @@ public class AgendaRepository {
             preparedStatement.setString(1, request.getFirst_name());
             preparedStatement.setString(2, request.getLast_name());
             preparedStatement.setString(3, request.getPhone_number());
-            preparedStatement.setInt(4, id);
+            preparedStatement.setString(4, request.getEmail());
+            preparedStatement.setInt(5, id);
 
             preparedStatement.executeUpdate();
         } catch (IOException e) {
@@ -65,7 +67,7 @@ public class AgendaRepository {
     }
 
     public List<Agenda> getContactByName(CreateAgendaEntryRequest request) throws IOException, SQLException, ClassNotFoundException {
-        String sql = "SELECT first_name, last_name, phone_number FROM contact WHERE first_name LIKE ?";
+        String sql = "SELECT first_name, last_name, phone_number, email FROM contact WHERE first_name LIKE ?";
         try (Connection connection = DatabaseConfiguration.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, request.getFirst_name());
@@ -78,6 +80,7 @@ public class AgendaRepository {
                 agenda.setFirst_name(resultSet.getString("first_name"));
                 agenda.setLast_name(resultSet.getString("last_name"));
                 agenda.setPhone_number(resultSet.getString("phone_number"));
+                agenda.setEmail(resultSet.getString("email"));
 
                 singleContact.add(agenda);
             }
@@ -87,7 +90,7 @@ public class AgendaRepository {
 
     public List<Agenda> getContacts() throws IOException, SQLException, ClassNotFoundException {
         // statement should be used only for no parameter queries.
-        String sql = "SELECT id, first_name, last_name, phone_number FROM contact";
+        String sql = "SELECT id, first_name, last_name, phone_number, email FROM contact";
         try (Connection connection = DatabaseConfiguration.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
@@ -100,6 +103,7 @@ public class AgendaRepository {
                 agenda.setFirst_name(resultSet.getString("first_name"));
                 agenda.setLast_name(resultSet.getString("last_name"));
                 agenda.setPhone_number(resultSet.getString("phone_number"));
+                agenda.setEmail(resultSet.getString("email"));
 
                 contacts.add(agenda);
             }
